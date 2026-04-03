@@ -4,7 +4,7 @@ FROM node:20-alpine AS builder
 RUN apk add --no-cache git
 
 ARG CACHE_BUST=2026-04-03
-RUN git clone --depth 1 https://github.com/open-world-agents/dataset-annotator /workspace
+RUN git clone --depth 1 https://github.com/cloneisyou/dataset-annotator /workspace
 
 WORKDIR /workspace
 RUN npm ci && npm run build
