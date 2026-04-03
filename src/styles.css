@@ -1,0 +1,1359 @@
+/* ====================================================================
+   OWA Dataset Annotator — Unified styles (desktop + mobile)
+   ==================================================================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  background: #0a0a0a;
+  color: #e0e0e0;
+  min-height: 100vh;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ====================================================================
+   Mode visibility — hide device-specific sections by default,
+   show based on .mode-desktop / .mode-mobile on #viewer
+   ==================================================================== */
+
+/* Desktop-only elements: hidden by default, shown in desktop mode */
+#overlay,
+#desktop-info-bar {
+  display: none;
+}
+
+#viewer.mode-desktop #overlay {
+  display: block;
+}
+
+#viewer.mode-desktop #desktop-info-bar {
+  display: flex;
+}
+
+/* Mobile-only elements: hidden by default, shown in mobile mode */
+#phone-frame,
+#info-bar {
+  display: none;
+}
+
+#viewer.mode-mobile #phone-frame {
+  display: flex;
+}
+
+#viewer.mode-mobile #info-bar {
+  display: flex;
+}
+
+/* Desktop-only info panels */
+.desktop-only { display: none; }
+#viewer.mode-desktop .desktop-only { display: block; }
+
+/* ====================================================================
+   File Selection
+   ==================================================================== */
+#file-select {
+  text-align: center;
+  padding: 40px;
+}
+
+#status {
+  margin-top: 10px;
+  color: #888;
+}
+
+/* ====================================================================
+   Viewer Layout
+   ==================================================================== */
+#viewer {
+  padding: 20px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+#viewer-layout {
+  display: flex;
+  gap: 0.8rem;
+  flex: 1;
+  min-height: 0;
+}
+
+#viewer.mode-desktop #viewer-layout {
+  gap: 20px;
+  padding: 0.5rem;
+}
+
+#viewer-main {
+  flex: 6;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ====================================================================
+   Media area (video + optional phone frame)
+   ==================================================================== */
+#media-area {
+  display: block;
+}
+
+#viewer.mode-mobile #media-area {
+  display: flex;
+  gap: 0.5rem;
+  flex: 1;
+  min-height: 0;
+  justify-content: center;
+  align-items: flex-start;
+  max-width: 100vw;
+  overflow: hidden;
+}
+
+#viewer-video {
+  flex: 0 0 auto;
+}
+
+#video-container {
+  position: relative;
+}
+
+#viewer.mode-desktop #video-container {
+  background: #000;
+}
+
+#video {
+  display: block;
+  background: #000;
+  border-radius: 8px;
+}
+
+/* Desktop: video centered */
+#viewer.mode-desktop #video {
+  width: 100%;
+  max-width: 960px;
+  max-height: 540px;
+  margin: 0 auto;
+}
+
+/* Mobile: constrain video size */
+#viewer.mode-mobile #video {
+  max-height: 70vh;
+  max-width: 30vw;
+}
+
+
+#loading-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  z-index: 100;
+  pointer-events: none;
+}
+
+/* ====================================================================
+   Desktop: Keyboard/Mouse overlay
+   ==================================================================== */
+#viewer.mode-desktop #overlay {
+  display: block;
+  background: #0a0a0a;
+  margin: 0 auto;
+}
+
+/* Desktop info bar (bottom, matches mobile info-bar style) */
+#desktop-info-bar {
+  gap: 2rem;
+  padding: 0.4rem 1rem;
+  background: #141414;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-family: monospace;
+  color: #aaa;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  margin-top: 0.3rem;
+}
+
+#desktop-info-bar #time-info span {
+  color: #4a9eff;
+}
+
+#mouse-mode {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#mouse-mode label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+#mouse-mode input[type="radio"] {
+  cursor: pointer;
+}
+
+#recenter-interval {
+  width: 50px;
+  padding: 2px 4px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background: #1e1e1e;
+  color: #ddd;
+  text-align: right;
+  font-size: 0.8rem;
+}
+
+#recenter-interval:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+#recenter-label:has(#recenter-interval:disabled) {
+  opacity: 0.5;
+}
+
+/* Window info (in info-panels) */
+#window-info .title {
+  color: #4a9eff;
+  word-break: break-all;
+}
+
+#window-info .coords {
+  color: #888;
+}
+
+#window-info .placeholder {
+  color: #666;
+  font-style: italic;
+}
+
+/* ====================================================================
+   Mobile: Phone frame + touch canvas + hardware buttons
+   ==================================================================== */
+#phone-frame {
+  flex: 0 1 auto;
+  align-items: stretch;
+  position: relative;
+  max-height: 70vh;
+  max-width: 30vw;
+  overflow: hidden;
+}
+
+#viewer-touch {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+#touch-canvas {
+  display: block;
+  background: #111;
+  border-radius: 6px 0 0 6px;
+  border: 1px solid #222;
+  border-right: none;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Hardware buttons — default: right edge (rotation 0 / portrait) */
+#hardware-buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 0;
+  flex: 0 0 auto;
+  width: 14px;
+  background: #1a1a1a;
+  border-radius: 0 6px 6px 0;
+  border: 1px solid #222;
+  border-left: none;
+  position: relative;
+}
+
+.hw-btn {
+  background: #2a2a2a;
+  border: 1px solid #333;
+  border-left: none;
+  border-right: none;
+  cursor: default;
+  position: absolute;
+  transition: background 0.1s, box-shadow 0.1s;
+  width: 100%;
+  height: 6%;
+  right: 0;
+  left: 0;
+}
+
+#btn-volume-up { top: 18%; border-radius: 0 4px 4px 0; }
+#btn-volume-down { top: 26%; border-radius: 0 4px 4px 0; }
+#btn-power { top: 38%; height: 12%; border-radius: 0 4px 4px 0; }
+
+.hw-btn.active {
+  background: #e74c3c;
+  border-color: #c0392b;
+  box-shadow: 0 0 8px rgba(231, 76, 60, 0.6);
+}
+
+/* Rotation 1: landscape (90 CW) — buttons on top */
+#phone-frame.rotation-1 { flex-direction: column-reverse; }
+#phone-frame.rotation-1 #viewer-touch { min-height: 0; }
+#phone-frame.rotation-1 #touch-canvas {
+  border-radius: 0 0 6px 6px;
+  border: 1px solid #222;
+  border-top: none;
+}
+#phone-frame.rotation-1 #hardware-buttons {
+  flex-direction: row;
+  width: 100%;
+  height: 14px;
+  border-radius: 6px 6px 0 0;
+  border: 1px solid #222;
+  border-bottom: none;
+}
+#phone-frame.rotation-1 .hw-btn {
+  width: 6%; height: 100%;
+  top: 0; bottom: 0;
+  left: auto; right: auto;
+  border-top: none; border-bottom: none;
+  border-left: 1px solid #333; border-right: 1px solid #333;
+}
+#phone-frame.rotation-1 #btn-volume-up { left: 18%; top: 0; border-radius: 0 0 4px 4px; }
+#phone-frame.rotation-1 #btn-volume-down { left: 26%; top: 0; border-radius: 0 0 4px 4px; }
+#phone-frame.rotation-1 #btn-power { left: 38%; top: 0; width: 12%; height: 100%; border-radius: 0 0 4px 4px; }
+
+/* Rotation 2: upside-down portrait — buttons on the left */
+#phone-frame.rotation-2 { flex-direction: row-reverse; }
+#phone-frame.rotation-2 #touch-canvas {
+  border-radius: 0 6px 6px 0;
+  border: 1px solid #222;
+  border-left: none;
+}
+#phone-frame.rotation-2 #hardware-buttons {
+  border-radius: 6px 0 0 6px;
+  border: 1px solid #222;
+  border-right: none;
+}
+#phone-frame.rotation-2 .hw-btn { left: 0; right: 0; border-left: none; border-right: none; }
+#phone-frame.rotation-2 #btn-volume-up { border-radius: 4px 0 0 4px; }
+#phone-frame.rotation-2 #btn-volume-down { border-radius: 4px 0 0 4px; }
+#phone-frame.rotation-2 #btn-power { border-radius: 4px 0 0 4px; }
+
+/* Rotation 3: reverse landscape (270 CW) — buttons on bottom */
+#phone-frame.rotation-3 { flex-direction: column; }
+#phone-frame.rotation-3 #viewer-touch { min-height: 0; }
+#phone-frame.rotation-3 #touch-canvas {
+  border-radius: 6px 6px 0 0;
+  border: 1px solid #222;
+  border-bottom: none;
+}
+#phone-frame.rotation-3 #hardware-buttons {
+  flex-direction: row;
+  width: 100%;
+  height: 14px;
+  border-radius: 0 0 6px 6px;
+  border: 1px solid #222;
+  border-top: none;
+}
+#phone-frame.rotation-3 .hw-btn {
+  width: 6%; height: 100%;
+  top: 0; bottom: 0;
+  left: auto; right: auto;
+  border-top: none; border-bottom: none;
+  border-left: 1px solid #333; border-right: 1px solid #333;
+}
+#phone-frame.rotation-3 #btn-volume-up { right: 18%; left: auto; top: 0; border-radius: 4px 4px 0 0; }
+#phone-frame.rotation-3 #btn-volume-down { right: 26%; left: auto; top: 0; border-radius: 4px 4px 0 0; }
+#phone-frame.rotation-3 #btn-power { right: 38%; left: auto; top: 0; width: 12%; height: 100%; border-radius: 4px 4px 0 0; }
+
+/* Mobile info bar */
+#info-bar {
+  gap: 2rem;
+  padding: 0.4rem 1rem;
+  background: #222;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: #aaa;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.3rem;
+}
+
+/* ====================================================================
+   Info panels (bottom row, like visualizer)
+   ==================================================================== */
+#info-panels {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.8rem;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+#info-panels > div,
+#info-panels > details {
+  background: #141414;
+  border-radius: 6px;
+  padding: 0.8rem 1rem;
+  min-width: 220px;
+}
+
+#device-info {
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+#mcap-info {
+  font-family: monospace;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+#window-info {
+  font-family: monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+.placeholder {
+  color: #555;
+  font-size: 0.85rem;
+}
+
+.section-title {
+  font-weight: 600;
+  color: #aaa;
+  margin-bottom: 0.3rem;
+  font-size: 0.8rem;
+}
+
+.topic-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 0;
+  border-bottom: 1px solid #333;
+}
+
+.topic-name {
+  color: #aaa;
+}
+
+.topic-count {
+  color: #666;
+}
+
+.time-range {
+  color: #888;
+  margin-top: 8px;
+}
+
+/* ====================================================================
+   Timeline (shared)
+   ==================================================================== */
+#timeline-container {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+  margin-top: 0.4rem;
+}
+
+#timeline-time-display,
+#timeline-duration {
+  font-size: 0.75rem;
+  color: #888;
+  font-variant-numeric: tabular-nums;
+  min-width: 70px;
+  text-align: center;
+}
+
+#timeline-track {
+  flex: 1;
+  height: 20px;
+  background: #111;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+  border: 1px solid #282828;
+}
+
+#timeline-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background: rgba(74, 158, 255, 0.25);
+  border-radius: 4px 0 0 4px;
+  pointer-events: none;
+}
+
+/* Mobile mode: red accent for timeline */
+#viewer.mode-mobile #timeline-progress {
+  background: rgba(231, 76, 60, 0.25);
+}
+
+#timeline-playhead {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 3px;
+  background: #4a9eff;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+#viewer.mode-mobile #timeline-playhead {
+  background: #e74c3c;
+}
+
+.timeline-marker {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  width: 3px;
+  background: #e74c3c;
+  border-radius: 1px;
+  opacity: 0.8;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+#viewer.mode-mobile .timeline-marker {
+  background: #3498db;
+}
+
+/* ====================================================================
+   Transport controls (shared)
+   ==================================================================== */
+#transport-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0;
+}
+
+#transport-controls button {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  color: #ddd;
+  border-radius: 6px;
+  padding: 0.3rem 0.8rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+#transport-controls button:hover {
+  border-color: #4a9eff;
+}
+
+#viewer.mode-mobile #transport-controls button:hover {
+  border-color: #e74c3c;
+}
+
+#current-time-label {
+  font-size: 0.8rem;
+  color: #888;
+  font-variant-numeric: tabular-nums;
+  min-width: 60px;
+}
+
+#skip-interval-label {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+#skip-interval {
+  width: 50px;
+  padding: 2px 4px;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #ddd;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+#skip-interval:focus {
+  border-color: #4a9eff;
+  outline: none;
+}
+
+/* ====================================================================
+   Right panel (instruction + annotations) — shared
+   ==================================================================== */
+#right-panel {
+  flex: 4;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  overflow: hidden;
+}
+
+#viewer.mode-desktop #right-panel {
+  gap: 12px;
+}
+
+#instruction-box {
+  background: #2a2a2a;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+#instruction-header {
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #ccc;
+  border-bottom: 1px solid #444;
+  background: #333;
+}
+
+#instruction-text {
+  display: block;
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #ddd;
+  line-height: 1.5;
+  background: transparent;
+  border: none;
+  resize: vertical;
+  min-height: 60px;
+  font-family: inherit;
+  word-break: break-word;
+}
+
+#instruction-text:focus {
+  outline: none;
+  background: #222;
+}
+
+#instruction-text::placeholder {
+  color: #555;
+  font-style: italic;
+}
+
+#annotation-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #2a2a2a;
+  border-radius: 6px;
+  padding: 14px;
+  overflow: hidden;
+  flex: 1;
+  min-height: 0;
+}
+
+#annotation-panel h3 {
+  font-size: 13px;
+  color: #ccc;
+  font-weight: 600;
+}
+
+/* Input area */
+#annotation-input-area {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: #222;
+  border-radius: 6px;
+  padding: 10px;
+  border: 1px solid #333;
+}
+
+#annotation-timestamp-display {
+  font-size: 13px;
+  color: #4a9eff;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+#viewer.mode-mobile #annotation-timestamp-display {
+  color: #e74c3c;
+}
+
+#annotation-text {
+  background: #1a1a1a;
+  color: #ddd;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 60px;
+}
+
+#annotation-text:focus {
+  border-color: #4a9eff;
+  outline: none;
+}
+
+#viewer.mode-mobile #annotation-text:focus {
+  border-color: #e74c3c;
+}
+
+#annotation-actions {
+  display: flex;
+  gap: 6px;
+}
+
+#btn-add-annotation {
+  flex: 1;
+  padding: 6px 12px;
+  background: #4a9eff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#btn-add-annotation:hover {
+  background: #3a8eef;
+}
+
+#viewer.mode-mobile #btn-add-annotation {
+  background: #e74c3c;
+}
+
+#viewer.mode-mobile #btn-add-annotation:hover {
+  background: #c0392b;
+}
+
+/* Annotation list */
+#annotation-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+}
+
+#annotation-list-empty {
+  color: #555;
+  font-size: 12px;
+  text-align: center;
+  padding: 1.5rem 0.5rem;
+}
+
+.annotation-item {
+  background: #222;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 8px;
+  transition: border-color 0.15s;
+}
+
+.annotation-item-active {
+  border-color: #4a9eff;
+  background: #1a2030;
+}
+
+#viewer.mode-mobile .annotation-item-active {
+  border-color: #e74c3c;
+  background: #1e1418;
+}
+
+.annotation-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.annotation-item-time {
+  font-size: 12px;
+  color: #4a9eff;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+}
+
+.annotation-item-time:hover {
+  color: #6ab4ff;
+  text-decoration: underline;
+}
+
+.annotation-item-actions {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.annotation-item-edit {
+  background: none;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.annotation-item-edit:hover {
+  color: #4a9eff;
+}
+
+.annotation-item-delete {
+  background: none;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  font-size: 11px;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.annotation-item-delete:hover {
+  color: #e74c3c;
+}
+
+/* Inline edit mode */
+.annotation-item-editing {
+  border-color: #4a9eff;
+}
+
+.annotation-edit-textarea {
+  width: 100%;
+  background: #1a1a1a;
+  color: #ddd;
+  border: 1px solid #4a9eff;
+  border-radius: 4px;
+  padding: 6px;
+  font-size: 12px;
+  font-family: inherit;
+  resize: vertical;
+  margin-top: 4px;
+}
+
+.annotation-edit-textarea:focus {
+  outline: none;
+  border-color: #6ab4ff;
+}
+
+.annotation-edit-time-row {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.annotation-edit-time-label {
+  color: #4a9eff;
+  font-weight: 600;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.annotation-edit-time-input {
+  background: #1a1a1a;
+  color: #4a9eff;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-size: 12px;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  width: 100px;
+}
+
+.annotation-edit-time-input:focus {
+  outline: none;
+  border-color: #4a9eff;
+}
+
+.annotation-edit-time-input.input-error {
+  border-color: #e74c3c;
+}
+
+.annotation-edit-actions {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.annotation-edit-save {
+  flex: 1;
+  padding: 4px;
+  background: #4a9eff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.annotation-edit-save:hover {
+  background: #3a8eef;
+}
+
+.annotation-edit-cancel {
+  flex: 1;
+  padding: 4px;
+  background: #333;
+  color: #bbb;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.annotation-edit-cancel:hover {
+  background: #444;
+  color: #ddd;
+}
+
+.annotation-item-text {
+  font-size: 12px;
+  color: #bbb;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+/* Save / Load buttons */
+#annotation-file-actions {
+  display: flex;
+  gap: 6px;
+  padding-top: 8px;
+  border-top: 1px solid #333;
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+#btn-save-json {
+  flex: 1;
+  padding: 6px;
+  background: #222;
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #ddd;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+#btn-save-json:hover {
+  border-color: #4a9eff;
+}
+
+.file-btn-inline {
+  flex: 1;
+  padding: 6px;
+  background: #222;
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #ddd;
+  cursor: pointer;
+  font-size: 12px;
+  text-align: center;
+  display: block;
+}
+
+.file-btn-inline:hover {
+  border-color: #4a9eff;
+}
+
+.file-btn-inline input {
+  display: none;
+}
+
+/* Annotation list scrollbar */
+#annotation-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+#annotation-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#annotation-list::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+
+#annotation-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  #viewer-layout {
+    flex-direction: column;
+  }
+
+  #right-panel {
+    width: 100%;
+    max-height: none;
+  }
+}
+
+/* ====================================================================
+   Landing Page
+   ==================================================================== */
+#landing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  position: relative;
+}
+
+.landing-bg {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+}
+
+.landing-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.landing-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px 20px;
+  text-align: center;
+  color: #fff;
+}
+
+.landing-logo { height: 60px; margin-bottom: 1.5rem; filter: invert(1); }
+
+.landing-content h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.landing-subtitle {
+  color: #888;
+  margin-bottom: 2rem;
+}
+
+.dataset-list {
+  text-align: left;
+  margin-bottom: 2rem;
+}
+
+.dataset-list h3 {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.dataset-list ul {
+  list-style: disc inside;
+}
+
+.dataset-list a {
+  color: #93c5fd;
+  text-decoration: none;
+}
+
+.dataset-list a:hover {
+  color: #dbeafe;
+  text-decoration: underline;
+}
+
+.search-box {
+  display: flex;
+  width: 100%;
+  max-width: 32rem;
+  margin-bottom: 1rem;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem 0 0 0.25rem;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border: none;
+  outline: none;
+}
+
+.search-box input::placeholder {
+  color: #d1d5db;
+}
+
+.search-box input:focus {
+  box-shadow: 0 0 0 2px #93c5fd;
+}
+
+.search-box button {
+  padding: 0.5rem 1rem;
+  background: #3b82f6;
+  border-radius: 0 0.25rem 0.25rem 0;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.search-box button:hover {
+  background: #2563eb;
+}
+
+.more-datasets {
+  margin-top: 1rem;
+  max-width: 32rem;
+  width: 100%;
+}
+
+.more-datasets summary {
+  cursor: pointer;
+  color: #9ca3af;
+}
+
+.more-datasets ul {
+  list-style: disc inside;
+  max-height: 7rem;
+  overflow-y: auto;
+  word-break: break-all;
+  text-align: left;
+  margin-top: 0.5rem;
+}
+
+.more-datasets a {
+  color: #93c5fd;
+}
+
+.more-datasets a:hover {
+  color: #dbeafe;
+  text-decoration: underline;
+}
+
+.local-section {
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 28rem;
+}
+
+.drop-zone {
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.2s;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.drop-zone:hover,
+.drop-zone.dragover {
+  border-color: #93c5fd;
+  background: rgba(147, 197, 253, 0.1);
+}
+
+.drop-zone-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.drop-zone-text {
+  font-size: 1rem;
+  color: #d1d5db;
+  margin-bottom: 0.5rem;
+}
+
+.drop-zone-or {
+  color: #6b7280;
+  font-size: 0.85rem;
+  margin: 0.75rem 0;
+}
+
+.drop-zone-files {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.file-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #d1d5db;
+  transition: all 0.2s;
+}
+
+.file-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.file-btn input {
+  display: none;
+}
+
+.file-btn.selected {
+  background: rgba(74, 158, 255, 0.2);
+  border-color: #4a9eff;
+  color: #93c5fd;
+}
+
+.file-btn-json {
+  border-color: #555;
+  color: #aaa;
+}
+
+.file-btn-json:hover {
+  border-color: #4a9eff;
+}
+
+/* "Load without JSON" button */
+.load-no-json-btn {
+  margin-top: 1rem;
+  padding: 0.6rem 1.5rem;
+  background: #3b82f6;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.load-no-json-btn:hover { background: #2563eb; }
+
+.drop-zone-status {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #9ca3af;
+  min-height: 1.2em;
+}
+
+/* ====================================================================
+   Dataset Link (HF side panel)
+   ==================================================================== */
+#dataset-link {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #3a3a5a;
+}
+
+#dataset-link a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  color: #e0e0e0;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+#dataset-link a:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+#dataset-link .hf-icon {
+  font-size: 16px;
+}
+
+#dataset-link #dataset-link-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#dataset-link .external-icon {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+/* HuggingFace file tree in side panel */
+#file-section > ul {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+#file-section ul {
+  padding-left: 12px;
+  margin: 0;
+  list-style: none;
+}
+
+#file-section details {
+  margin: 2px 0;
+}
+
+#file-section summary {
+  cursor: pointer;
+  padding: 4px 8px;
+  background: #2a2a2a;
+  border-radius: 4px;
+  font-size: 0.85em;
+  color: #9ca3af;
+}
+
+#file-section summary:hover {
+  background: #333;
+}
+
+#file-section li {
+  padding: 5px 10px;
+  margin: 2px 0;
+  background: #333;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8em;
+  word-break: break-all;
+}
+
+#file-section li:hover {
+  background: #444;
+}
+
+#file-section li.active {
+  background: #4a9eff;
+}
+
+#file-section li.loading::after {
+  content: "  Loading...";
+  color: #fbbf24;
+  font-weight: 600;
+}

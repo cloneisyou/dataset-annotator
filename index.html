@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dataset Annotator</title>
+  <link rel="icon" href="data:,">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles.css">
+</head>
+
+<body>
+  <div id="app">
+    <!-- Landing Page -->
+    <div id="landing" class="hidden">
+      <div class="landing-bg"></div>
+      <div class="landing-overlay"></div>
+      <div class="landing-content">
+        <img src="/clone_logo_wide.png" alt="Clone" class="landing-logo">
+        <h1>Dataset Annotator</h1>
+        <p class="landing-subtitle">Annotate multimodal agent recordings — desktop and mobile</p>
+
+        <div class="dataset-list">
+          <h3>Example Datasets:</h3>
+          <ul id="featured-datasets"></ul>
+        </div>
+
+        <div class="search-box">
+          <input type="text" id="dataset-input" placeholder="enter dataset id (ex: org/dataset_name)">
+          <button id="go-btn">Go</button>
+        </div>
+
+        <details class="more-datasets">
+          <summary>More example datasets</summary>
+          <ul id="more-datasets"></ul>
+        </details>
+
+        <div class="local-section">
+          <div class="drop-zone" id="drop-zone">
+            <div class="drop-zone-icon">📁</div>
+            <div class="drop-zone-text">Drop MCAP + MKV + JSON files here</div>
+            <div class="drop-zone-or">or</div>
+            <div class="drop-zone-files">
+              <label class="file-btn"><input type="file" id="mcap-input-landing" accept=".mcap"> Select MCAP</label>
+              <label class="file-btn"><input type="file" id="mkv-input-landing" accept=".mkv,.mp4,.webm"> Select
+                MKV</label>
+              <label class="file-btn file-btn-json"><input type="file" id="json-input-landing" accept=".json"> Select JSON</label>
+            </div>
+            <div class="drop-zone-status" id="file-status"></div>
+            <button id="load-no-json-btn" class="load-no-json-btn hidden">Load without JSON →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- File Selection (direct URL mode) -->
+    <div id="file-select" class="hidden">
+      <h2>Loading...</h2>
+      <p id="status"></p>
+    </div>
+
+    <!-- Viewer -->
+    <div id="viewer" class="hidden">
+      <div id="viewer-layout">
+        <!-- Left: Video + Overlays -->
+        <div id="viewer-main">
+
+          <!-- Media area: video (+ phone frame in mobile mode) -->
+          <div id="media-area">
+            <div id="viewer-video">
+              <div id="video-container">
+                <video id="video"></video>
+                <div id="loading-indicator" class="hidden">Loading...</div>
+              </div>
+            </div>
+
+            <!-- Mobile only: phone frame with touch canvas + hw buttons -->
+            <div id="phone-frame">
+              <div id="viewer-touch">
+                <canvas id="touch-canvas"></canvas>
+              </div>
+              <div id="hardware-buttons">
+                <div class="hw-btn" id="btn-volume-up" data-label="VOL +"></div>
+                <div class="hw-btn" id="btn-volume-down" data-label="VOL −"></div>
+                <div class="hw-btn hw-btn-power" id="btn-power" data-label="⏻"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop only: keyboard/mouse overlay below video -->
+          <canvas id="overlay"></canvas>
+
+          <!-- Timeline -->
+          <div id="timeline-container">
+            <div id="timeline-time-display">00:00.000</div>
+            <div id="timeline-track">
+              <div id="timeline-progress"></div>
+              <div id="timeline-playhead"></div>
+            </div>
+            <div id="timeline-duration">00:00.000</div>
+          </div>
+
+          <!-- Transport controls -->
+          <div id="transport-controls">
+            <button id="btn-prev-frame" title="Previous frame (←)">⏮</button>
+            <button id="btn-skip-back" title="Skip backward">⏪</button>
+            <button id="btn-play-pause" title="Play/Pause (Space)">▶</button>
+            <button id="btn-skip-forward" title="Skip forward">⏩</button>
+            <button id="btn-next-frame" title="Next frame (→)">⏭</button>
+            <span id="current-time-label">0.000s</span>
+            <label id="skip-interval-label" title="Skip interval in seconds">
+              <input type="number" id="skip-interval" min="0.1" step="0.1" value="1"> s
+            </label>
+          </div>
+        </div>
+
+        <!-- Right: Instruction + Annotation Panel -->
+        <div id="right-panel">
+          <div id="instruction-box">
+            <div id="instruction-header">Instruction</div>
+            <textarea id="instruction-text" placeholder="Enter instruction..."></textarea>
+          </div>
+          <div id="annotation-panel">
+            <h3>Annotations</h3>
+
+            <!-- New annotation input -->
+            <div id="annotation-input-area">
+              <div id="annotation-timestamp-display">@ 00:00.000</div>
+              <textarea id="annotation-text" placeholder="Enter reasoning text..." rows="3"></textarea>
+              <div id="annotation-actions">
+                <button id="btn-add-annotation">Add Annotation (Enter)</button>
+              </div>
+            </div>
+
+            <!-- Annotation list -->
+            <div id="annotation-list">
+              <div id="annotation-list-empty">No annotations yet. Pause the video and add one!</div>
+            </div>
+
+            <!-- Save / Load -->
+            <div id="annotation-file-actions">
+              <button id="btn-save-json">Save JSON</button>
+              <label id="btn-load-json" class="file-btn-inline">
+                Load JSON
+                <input type="file" id="json-input-viewer" accept=".json">
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop only: info bar -->
+      <div id="desktop-info-bar">
+        <span id="time-info">Time: <span></span></span>
+        <span id="mouse-mode">
+          Mouse:
+          <label><input type="radio" name="mouse-mode" value="raw" checked> Relative (3D)</label>
+          <label><input type="radio" name="mouse-mode" value="absolute"> Absolute (2D)</label>
+          <label id="recenter-label">
+            Recenter:
+            <input type="number" id="recenter-interval" min="0" value="0" step="100" placeholder="ms">
+            ms (0=off)
+          </label>
+        </span>
+      </div>
+
+      <!-- Mobile only: info bar -->
+      <div id="info-bar">
+        <span id="time-info-mobile">Time: <span></span></span>
+        <span id="touch-info">Touches: <span>0</span></span>
+        <span id="rotation-info">Rotation: <span>Portrait</span></span>
+      </div>
+
+      <!-- Hidden info panel elements (referenced by JS but not displayed by default) -->
+      <div id="info-panels" class="hidden">
+        <div id="dataset-link" class="hidden">
+          <a id="dataset-link-anchor" href="#" target="_blank" rel="noopener noreferrer">
+            <span class="hf-icon">🤗</span>
+            <span id="dataset-link-text"></span>
+            <span class="external-icon">↗</span>
+          </a>
+        </div>
+        <details id="file-section" class="hidden" open>
+          <summary>Files</summary>
+          <ul id="hf-file-list"></ul>
+        </details>
+        <div id="device-info"></div>
+        <div id="window-info"></div>
+        <div id="mcap-info"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
